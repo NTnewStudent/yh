@@ -13,6 +13,7 @@ class CheckToken
  * @param  \Closure  $next
  * @return mixed
  */
+
     public function handle($request, Closure $next)
     {
         //        获取token判断是否过期
