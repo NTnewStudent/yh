@@ -112,3 +112,23 @@ Route::post('register','LoginController@register');
  * 用户登陆
  */
 Route::post('login','LoginController@login');
+
+/**
+ *显示用信息
+ */
+Route::get('getUserInfo','UserController@getUserInfo') ->middleware('CheckToken');
+
+/**
+ * 修改用户信息
+ */
+Route::put('UserInfoRedact','RedactController@UserInfoRedact')->middleware('CheckToken');
+
+/**
+ * 营业执照副本上传
+ */
+Route::post('uploadImage','UploadController@uploadImage')->middleware('CheckToken');
+
+/**
+ * 获取营业执照副本图片
+ */
+Route::get('getUserSocialCodeImage','UserController@getUserSocialCodeImage')->middleware('CheckToken');

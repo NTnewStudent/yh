@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use Cache;
 use Closure;
+use Illuminate\Support\Facades\Input;
 
 class CheckToken
 {
@@ -13,11 +15,15 @@ class CheckToken
  * @param  \Closure  $next
  * @return mixed
  */
-
     public function handle($request, Closure $next)
     {
         //        获取token判断是否过期
         $token = Input::get('token');
+
+        if(empty($token)){
+            return response() ->json(['code' => 404,'msg' =>'token不能为空！']) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        }
+
 
         $uuid =  Cache::get($token);
 

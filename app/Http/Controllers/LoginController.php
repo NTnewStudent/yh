@@ -46,10 +46,10 @@ class LoginController extends Controller
         $password = Input::get('password');
 
 //        短信验证码是否正确
-      $phoneCode =  Cache::get($phone);
-      if(!$code == $phoneCode){
-          return response() ->json(['code' => 400,'msg' => '验证码错误！']) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
-      }
+//      $phoneCode =  Cache::get($phone);
+//      if(!$code == $phoneCode){
+//          return response() ->json(['code' => 400,'msg' => '验证码错误！']) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+//      }
 
 //        查询数据库用户是否存在
       $user =   UserModel::where(['phone' => $phone]) -> get();
