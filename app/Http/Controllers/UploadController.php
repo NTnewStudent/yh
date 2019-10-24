@@ -54,6 +54,9 @@ class UploadController extends Controller
 
     /**
      * 验证文件是否合法
+     * @param $file
+     * @param string $disk
+     * @return bool|string
      */
     public function upload($file, $disk='public') {
         // 1.是否上传成功
@@ -81,7 +84,7 @@ class UploadController extends Controller
         // 5.每天一个文件夹,分开存储, 生成一个随机文件名
         $fileName = date('Y_m_d').'/'.md5(time()) .mt_rand(0,9999).'.'. $fileExtension;
         if (Storage::disk($disk)->put($fileName, file_get_contents($tmpFile)) ){
-            return Storage::url($fileName);
+            return $fileName;
         }
 
     }

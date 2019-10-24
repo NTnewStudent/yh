@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\CategoryModel;
-use App\Model\UserModel ;
+use App\Model\UserModel;
 use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Storage;
 use Validator;
 
 class UserController extends Controller
@@ -101,7 +99,7 @@ class UserController extends Controller
     public function getUserList(Request $request){
         $size = 4 ;
         $list = UserModel::paginate($size);
-      
+
         if($list){
             return response() -> json(['code' => 200,'msg' => "success！",'data'=>$list]) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }else{
@@ -128,7 +126,7 @@ class UserController extends Controller
      *
      */
     public function UserLogin(Request $request){
-    
+
     $validator = Validator::make($request->all(),
             [
             'mobile' => 'required|unique:posts|max:12',
@@ -143,7 +141,7 @@ class UserController extends Controller
         }
 
         $User = \DB::table('yh_user')->where(['phone'=>Input::get('mobile'),'pwd'=>Input::get('pwd')]);
-       
+
         $request->session()->put('is_login',1);
 
         return $request->session()->get('is_login');
@@ -191,12 +189,67 @@ class UserController extends Controller
 
 //            查询数据库
             if( $data = (new UserModel()) ->getUserSocialCodeImage($uuid) ){
-                return response() ->json(['code' => 200,'msg' => $_SERVER['SERVER_NAME'].$data['msg'] ]) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+                return response() ->json(['code' => 200,'msg' => 'https://'.$_SERVER['SERVER_NAME'].'/client/storage/app/public/'.$data['msg'] ]) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
 
             }
 
             return response() ->json(['code' => 400,'msg' => '查询图片失败！']) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
 //            return $_SERVER['SERVER_NAME'];
+
+        }
+
+
+    /**
+     * 获取公司编辑内容
+     */
+        public function getCompanyEdit(){
+
+            $token = Input::get('token');
+
+            $cache = Cache::get($token);
+
+            $uuid = $cache['uuid'];
+
+            if($data = ( new UserModel()) ->getCompanyEdit($uuid) ){
+
+                return response() ->json(['code' => 200,'msg' =>  $data['msg'] ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+
+            }
+
+            return response() ->json(['code' => 400,'msg' => $data['msg'] ])->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+
+        }
+
+    /**
+     * 修改公司内容
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+        public function updateCompanyEdit(Request $request){
+
+          $Validator =   Validator::make($request -> all(),[
+              'info_desc' => 'required',
+              'import_trans' => 'required',
+          ],[
+              'info_desc.required' => '主要业务不能为空哦！',
+              'import_trans.required' => '主要业务不能为空哦！',
+          ]);
+
+          if($Validator ->fails()){
+              return response() ->json(['code' => 404,'msg' => $Validator ->errors() ]) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+          }
+
+//          修改数据
+
+            if( $data = ( new UserModel() ) -> updateCompanyEdit($request -> all()) ){
+
+                return response() ->json(['code' =>200,'msg' => $data['msg'] ]) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+
+            }
+
+            return response() ->json(['code' =>400,'msg' => $data['msg'] ]) ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+
+
 
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use App\User;
 use Cache;
 use Illuminate\Database\Eloquent\Model;
 
@@ -142,6 +141,48 @@ class UserModel extends Model
        }
 
        return ['code' => true,'msg' => 'empty'];
+
+    }
+
+    public function getCompanyEdit($uuid)
+    {
+        try {
+            $user = UserModel::find($uuid);
+        } catch (\Exception $e) {
+            return ['code' => false,'msg' => '查询数据失败！'];
+        }
+
+        if(!$user -> isEmpty){
+        return ['code' => true,'msg' => [
+          'info_desc' =>  $user ->info_desc,
+          'import_trans' =>  $user ->import_trans,
+        ] ];
+       }
+
+       return ['code' => false,'msg' => 'empty' ];
+
+    }
+
+    public function updateCompanyEdit($all)
+    {
+        $token = $all['token'];
+        $info_desc = $all['info_desc'];
+        $import_trans = $all['import_trans'];
+
+        $cache = Cache::get($token);
+
+        $uuid = $cache['uuid'];
+
+      $user =   UserModel::where(['id' => $uuid]) ->update([
+          'info_desc' => $info_desc,
+          'import_trans' => $import_trans,
+      ]);
+
+      if($user == 1){
+            return ['code' => true,'msg' => '修改成功！'];
+      }
+
+      return ['code' => false,'msg' =>'修改失败！'];
 
     }
 

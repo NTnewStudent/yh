@@ -121,7 +121,7 @@ Route::get('getUserInfo','UserController@getUserInfo') ->middleware('CheckToken'
 /**
  * 修改用户信息
  */
-Route::put('UserInfoRedact','RedactController@UserInfoRedact')->middleware('CheckToken');
+Route::post('UserInfoRedact','RedactController@UserInfoRedact')->middleware('CheckToken');
 
 /**
  * 营业执照副本上传
@@ -132,3 +132,18 @@ Route::post('uploadImage','UploadController@uploadImage')->middleware('CheckToke
  * 获取营业执照副本图片
  */
 Route::get('getUserSocialCodeImage','UserController@getUserSocialCodeImage')->middleware('CheckToken');
+
+/**
+ * 获取公司编辑内容
+ */
+Route::get('getCompanyEdit','UserController@getCompanyEdit')->middleware('CheckToken');
+
+/**
+ * 修改公司编辑内容
+ */
+Route::post('updateCompanyEdit','UserController@updateCompanyEdit')->middleware('CheckToken');
+
+/**
+ * 查询产品内容
+ */
+Route::get('getProductList','GoodsListController@getProductList')->middleware('CheckToken');
